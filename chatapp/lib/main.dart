@@ -1,12 +1,7 @@
-import 'package:chatapp/pages/login_page.dart';
 import 'package:chatapp/services/auth_service.dart';
 import 'package:chatapp/services/navegation_service.dart';
 import 'package:chatapp/utils.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
