@@ -110,6 +110,7 @@ class _LoginPageState extends State<LoginPage> {
               hintText: "Contraseña",
               height: MediaQuery.sizeOf(context).height * 0.1,
               validationRegEx: PASSWORD_VALIDATION_REGEX,
+
               obscureText: true,
               onSaved: (value) {
                 setState(() {
