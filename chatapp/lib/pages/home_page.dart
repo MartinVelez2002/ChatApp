@@ -1,3 +1,4 @@
+import 'package:chatapp/services/alert_service.dart';
 import 'package:chatapp/services/auth_service.dart';
 import 'package:chatapp/services/navegation_service.dart';
 import 'package:flutter/material.dart';
@@ -14,12 +15,14 @@ class _HomePageState extends State<HomePage> {
   final GetIt _getIt = GetIt.instance;
   late AuthService _authService;
   late NavegationService _navegationService;
+  late AlerService _alertService;
 
   @override
   void initState() {
     super.initState();
     _authService = _getIt.get<AuthService>();
     _navegationService = _getIt.get<NavegationService>();
+    _alertService = _getIt.get<AlerService>();
   }
 
   @override
@@ -34,6 +37,9 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () async {
                   bool result = await _authService.logout();
                   if (result) {
+                    _alertService.showToast(
+                        text: "Se ha cerrado la sesión",
+                        icon: Icons.waving_hand);
                     _navegationService.pushReplacementNamed("/login");
                   }
                 },

@@ -1,4 +1,5 @@
 import 'package:chatapp/consts.dart';
+import 'package:chatapp/services/alert_service.dart';
 import 'package:chatapp/services/auth_service.dart';
 import 'package:chatapp/services/navegation_service.dart';
 import 'package:chatapp/widgets/custom_form_field.dart';
@@ -18,6 +19,7 @@ class _LoginPageState extends State<LoginPage> {
 
   late AuthService _authService;
   late NavegationService _navegationService;
+  late AlerService _alertService;
 
   String? email, password;
 
@@ -25,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     _authService = _getIt.get<AuthService>();
     _navegationService = _getIt.get<NavegationService>();
+    _alertService = _getIt.get<AlerService>();
   }
 
   @override
@@ -131,8 +134,18 @@ class _LoginPageState extends State<LoginPage> {
             bool result = await _authService.login(email!, password!);
             print(result);
             if (result) {
+              _alertService.showToast(
+                text: "Sesión Iniciada",
+                icon: Icons.verified_sharp
+              );
               _navegationService.pushReplacementNamed("/home");
-            } else {}
+            } else {
+              _alertService.showToast(
+                text:
+                    "Correo o contraeña incorrectos, por favor inténtalo de nuevo",
+                icon: Icons.error,
+              );
+            }
           }
         },
         color: Theme.of(context).colorScheme.primary,
