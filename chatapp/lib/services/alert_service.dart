@@ -4,12 +4,11 @@ import 'package:delightful_toast/toast/components/toast_card.dart';
 import 'package:delightful_toast/toast/utils/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:path/path.dart';
 
-class AlerService {
+class AlertService {
   final GetIt _getIt = GetIt.instance;
   late NavegationService _navegationService;
-  AlerService() {
+  AlertService() {
     _navegationService = _getIt.get<NavegationService>();
   }
 

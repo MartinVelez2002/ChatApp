@@ -4,6 +4,7 @@ import 'package:chatapp/services/auth_service.dart';
 import 'package:chatapp/services/navegation_service.dart';
 import 'package:chatapp/widgets/custom_form_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 
 class LoginPage extends StatefulWidget {
@@ -19,15 +20,15 @@ class _LoginPageState extends State<LoginPage> {
 
   late AuthService _authService;
   late NavegationService _navegationService;
-  late AlerService _alertService;
+  late AlertService _alertService;
 
   String? email, password;
-
+  bool isloading = false;
   @override
   void initState() {
     _authService = _getIt.get<AuthService>();
     _navegationService = _getIt.get<NavegationService>();
-    _alertService = _getIt.get<AlerService>();
+    _alertService = _getIt.get<AlertService>();
   }
 
   @override
@@ -48,8 +49,8 @@ class _LoginPageState extends State<LoginPage> {
       child: Column(
         children: [
           _headerText(),
-          _loginForm(),
-          _createAccountLink(),
+          if (!isloading) _loginForm(),
+          if (!isloading) _createAccountLink(),
         ],
       ),
     ));
@@ -105,6 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                   email = value;
                 });
               },
+              
             ),
             CustomFormField(
               hintText: "Contraseña",
@@ -116,6 +118,7 @@ class _LoginPageState extends State<LoginPage> {
                   password = value;
                 });
               },
+              
             ),
             _LoginButton()
           ],
@@ -135,16 +138,8 @@ class _LoginPageState extends State<LoginPage> {
             print(result);
             if (result) {
               _alertService.showToast(
-                text: "Sesión Iniciada",
-                icon: Icons.verified_sharp
-              );
+                  text: "Sesión Iniciada", icon: Icons.verified_sharp);
               _navegationService.pushReplacementNamed("/home");
-            } else {
-              _alertService.showToast(
-                text:
-                    "Correo o contraeña incorrectos, por favor inténtalo de nuevo",
-                icon: Icons.error,
-              );
             }
           }
         },
@@ -156,16 +151,22 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _createAccountLink() {
-    return const Expanded(
+    return Expanded(
         child: Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("¿Aún no tienes una cuenta?", style: TextStyle(fontSize: 14)),
-        Text(
-          "Regístrate",
-          style: TextStyle(fontWeight: FontWeight.w800),
+        const Text("¿Aún no tienes una cuenta?",
+            style: TextStyle(fontSize: 14)),
+        GestureDetector(
+          onTap: () {
+            _navegationService.pushNamed("/register");
+          },
+          child: const Text(
+            "Regístrate",
+            style: TextStyle(fontWeight: FontWeight.w800),
+          ),
         )
       ],
     ));

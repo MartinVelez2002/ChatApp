@@ -15,14 +15,14 @@ class _HomePageState extends State<HomePage> {
   final GetIt _getIt = GetIt.instance;
   late AuthService _authService;
   late NavegationService _navegationService;
-  late AlerService _alertService;
+  late AlertService _alertService;
 
   @override
   void initState() {
     super.initState();
     _authService = _getIt.get<AuthService>();
     _navegationService = _getIt.get<NavegationService>();
-    _alertService = _getIt.get<AlerService>();
+    _alertService = _getIt.get<AlertService>();
   }
 
   @override
