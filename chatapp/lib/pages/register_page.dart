@@ -4,6 +4,7 @@ import 'package:chatapp/services/alert_service.dart';
 import 'package:chatapp/services/auth_service.dart';
 import 'package:chatapp/services/media_service.dart';
 import 'package:chatapp/services/navegation_service.dart';
+import 'package:chatapp/services/storage_service.dart';
 import 'package:chatapp/utils.dart';
 import 'package:chatapp/widgets/custom_form_field.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
   late MediaService _mediaService;
   late NavegationService _navegationService;
   late AlertService _alerService;
+  late StorageService _storageService;
 
   String? email, password, name;
   File? selectedImage;
@@ -34,6 +36,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _navegationService = _getIt.get<NavegationService>();
     _authService = _getIt.get<AuthService>();
     _alerService = _getIt.get<AlertService>();
+    _storageService = _getIt.get<StorageService>();
   }
 
   @override
@@ -71,7 +74,7 @@ class _RegisterPageState extends State<RegisterPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            "Formulario para crear una cuenta",
+            "Registra una nueva cuenta",
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w800,
@@ -107,7 +110,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       },
                     );
                   },
-                  
                 ),
                 CustomFormField(
                   hintText: "Email: ",
@@ -120,7 +122,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       },
                     );
                   },
-                  
                 ),
                 CustomFormField(
                   hintText: "Contraseña: ",
@@ -128,14 +129,12 @@ class _RegisterPageState extends State<RegisterPage> {
                   validationRegEx: PASSWORD_VALIDATION_REGEX,
                   obscureText: true,
                   onSaved: (value) {
-                      setState(
+                    setState(
                       () {
                         password = value;
                       },
                     );
-
-                  },    
-                  
+                  },
                 ),
                 _registerButton()
               ],
@@ -176,7 +175,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 _registerFormKey.currentState?.save();
                 bool result = await _authService.signup(email!, password!);
                 if (result) {
-                  print(result);
+                  String? pfpURL = await _storageService.uploadUserPfp(
+                      file: selectedImage!, 
+                      uid: _authService.user!.uid);
                 }
               }
             } catch (e) {
