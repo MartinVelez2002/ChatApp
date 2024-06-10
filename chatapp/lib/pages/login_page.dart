@@ -4,7 +4,6 @@ import 'package:chatapp/services/auth_service.dart';
 import 'package:chatapp/services/navegation_service.dart';
 import 'package:chatapp/widgets/custom_form_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 
 class LoginPage extends StatefulWidget {
@@ -41,19 +40,20 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _buildUI() {
     return SafeArea(
-        child: Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 15.0,
-        vertical: 20.0,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 15.0,
+          vertical: 20.0,
+        ),
+        child: Column(
+          children: [
+            _headerText(),
+            if (!isloading) _loginForm(),
+            if (!isloading) _createAccountLink(),
+          ],
+        ),
       ),
-      child: Column(
-        children: [
-          _headerText(),
-          if (!isloading) _loginForm(),
-          if (!isloading) _createAccountLink(),
-        ],
-      ),
-    ));
+    );
   }
 
   Widget _headerText() {
@@ -106,7 +106,6 @@ class _LoginPageState extends State<LoginPage> {
                   email = value;
                 });
               },
-              
             ),
             CustomFormField(
               hintText: "Contraseña",
@@ -118,16 +117,15 @@ class _LoginPageState extends State<LoginPage> {
                   password = value;
                 });
               },
-              
             ),
-            _LoginButton()
+            _loginButton()
           ],
         ),
       ),
     );
   }
 
-  Widget _LoginButton() {
+  Widget _loginButton() {
     return SizedBox(
       width: MediaQuery.sizeOf(context).width,
       child: MaterialButton(
@@ -135,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
           if (_loginFormKey.currentState?.validate() ?? false) {
             _loginFormKey.currentState?.save();
             bool result = await _authService.login(email!, password!);
-            print(result);
+
             if (result) {
               _alertService.showToast(
                   text: "Sesión Iniciada", icon: Icons.verified_sharp);
@@ -152,23 +150,24 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _createAccountLink() {
     return Expanded(
-        child: Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text("¿Aún no tienes una cuenta?",
-            style: TextStyle(fontSize: 14)),
-        GestureDetector(
-          onTap: () {
-            _navegationService.pushNamed("/register");
-          },
-          child: const Text(
-            "Regístrate",
-            style: TextStyle(fontWeight: FontWeight.w800),
-          ),
-        )
-      ],
-    ));
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text("¿Aún no tienes una cuenta?",
+              style: TextStyle(fontSize: 14)),
+          GestureDetector(
+            onTap: () {
+              _navegationService.pushNamed("/register");
+            },
+            child: const Text(
+              "Regístrate",
+              style: TextStyle(fontWeight: FontWeight.w800),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

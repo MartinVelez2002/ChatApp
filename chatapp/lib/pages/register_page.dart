@@ -1,11 +1,12 @@
 import 'dart:io';
 import 'package:chatapp/consts.dart';
+import 'package:chatapp/models/user_profile.dart';
 import 'package:chatapp/services/alert_service.dart';
 import 'package:chatapp/services/auth_service.dart';
+import 'package:chatapp/services/database_service.dart';
 import 'package:chatapp/services/media_service.dart';
 import 'package:chatapp/services/navegation_service.dart';
 import 'package:chatapp/services/storage_service.dart';
-import 'package:chatapp/utils.dart';
 import 'package:chatapp/widgets/custom_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -21,10 +22,11 @@ class _RegisterPageState extends State<RegisterPage> {
   final GetIt _getIt = GetIt.instance;
   final GlobalKey<FormState> _registerFormKey = GlobalKey();
   late AuthService _authService;
-  late MediaService _mediaService;
+
   late NavegationService _navegationService;
-  late AlertService _alerService;
+  late AlertService _alertService;
   late StorageService _storageService;
+  late DatabaseService _databaseService;
 
   String? email, password, name;
   File? selectedImage;
@@ -32,11 +34,12 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   void initState() {
     super.initState();
-    _mediaService = _getIt.get<MediaService>();
+
     _navegationService = _getIt.get<NavegationService>();
     _authService = _getIt.get<AuthService>();
-    _alerService = _getIt.get<AlertService>();
+    _alertService = _getIt.get<AlertService>();
     _storageService = _getIt.get<StorageService>();
+    _databaseService = _getIt.get<DatabaseService>();
   }
 
   @override
@@ -87,58 +90,61 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _registerForm() {
     return Container(
-        height: MediaQuery.sizeOf(context).height * 0.6,
-        margin: EdgeInsets.symmetric(
-          vertical: MediaQuery.sizeOf(context).height * 0.05,
+      height: MediaQuery.sizeOf(context).height * 0.6,
+      margin: EdgeInsets.symmetric(
+        vertical: MediaQuery.sizeOf(context).height * 0.05,
+      ),
+      child: Form(
+        key: _registerFormKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _pfpSelectionFiled(),
+            CustomFormField(
+              hintText: "Usuario: ",
+              height: MediaQuery.sizeOf(context).height * 0.1,
+              validationRegEx: NAME_VALIDATION_REGEX,
+              onSaved: (value) {
+                setState(
+                  () {
+                    name = value;
+                  },
+                );
+              },
+            ),
+            CustomFormField(
+              hintText: "Email: ",
+              height: MediaQuery.sizeOf(context).height * 0.1,
+              validationRegEx: EMAIL_VALIDATION_REGEX,
+              onSaved: (value) {
+                setState(
+                  () {
+                    email = value;
+                  },
+                );
+              },
+            ),
+            CustomFormField(
+              hintText: "Contraseña",
+              height: MediaQuery.sizeOf(context).height * 0.1,
+              validationRegEx: PASSWORD_VALIDATION_REGEX,
+              obscureText: true,
+              onSaved: (value) {
+                setState(
+                  () {
+                    password = value;
+                  },
+                );
+              },
+            ),
+            _contentPassword(),
+            _registerButton()
+          ],
         ),
-        child: Form(
-            key: _registerFormKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                _pfpSelectionFiled(),
-                CustomFormField(
-                  hintText: "Usuario: ",
-                  height: MediaQuery.sizeOf(context).height * 0.1,
-                  validationRegEx: NAME_VALIDATION_REGEX,
-                  onSaved: (value) {
-                    setState(
-                      () {
-                        name = value;
-                      },
-                    );
-                  },
-                ),
-                CustomFormField(
-                  hintText: "Email: ",
-                  height: MediaQuery.sizeOf(context).height * 0.1,
-                  validationRegEx: EMAIL_VALIDATION_REGEX,
-                  onSaved: (value) {
-                    setState(
-                      () {
-                        email = value;
-                      },
-                    );
-                  },
-                ),
-                CustomFormField(
-                  hintText: "Contraseña: ",
-                  height: MediaQuery.sizeOf(context).height * 0.1,
-                  validationRegEx: PASSWORD_VALIDATION_REGEX,
-                  obscureText: true,
-                  onSaved: (value) {
-                    setState(
-                      () {
-                        password = value;
-                      },
-                    );
-                  },
-                ),
-                _registerButton()
-              ],
-            )));
+      ),
+    );
   }
 
   Widget _pfpSelectionFiled() {
@@ -162,56 +168,93 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _registerButton() {
     return SizedBox(
-        width: MediaQuery.sizeOf(context).width,
-        child: MaterialButton(
-          color: Theme.of(context).colorScheme.primary,
-          onPressed: () async {
-            setState(() {
-              isloading = true;
-            });
-            try {
-              if ((_registerFormKey.currentState?.validate() ?? false) &&
-                  selectedImage != null) {
-                _registerFormKey.currentState?.save();
-                bool result = await _authService.signup(email!, password!);
-                if (result) {
-                  String? pfpURL = await _storageService.uploadUserPfp(
-                      file: selectedImage!, 
-                      uid: _authService.user!.uid);
+      width: MediaQuery.sizeOf(context).width,
+      child: MaterialButton(
+        color: Theme.of(context).colorScheme.primary,
+        onPressed: () async {
+          setState(() {
+            isloading = true;
+          });
+          try {
+            if ((_registerFormKey.currentState?.validate() ?? false)) {
+              _registerFormKey.currentState?.save();
+              bool result = await _authService.signup(email!, password!);
+              if (result) {
+                String? pfpURL = await _storageService.uploadUserPfp(
+                    file: selectedImage!, uid: _authService.user!.uid);
+                if (pfpURL != null) {
+                  await _databaseService.createUserProfile(
+                    userProfile: UserProfile(
+                        uid: _authService.user!.uid,
+                        name: name,
+                        pfpURL: pfpURL),
+                  );
+                  _alertService.showToast(
+                    text: "Te has registrado satisfactoriamente",
+                    icon: Icons.check_circle_outline,
+                  );
                 }
               }
-            } catch (e) {
-              print(e);
             }
-            setState(() {
-              isloading = false;
-            });
-          },
-          child: const Text(
-            "Registrar",
-            style: TextStyle(color: Colors.white),
-          ),
-        ));
+          } catch (e) {
+            print(e);
+          }
+          setState(() {
+            isloading = false;
+          });
+        },
+        child: const Text(
+          "Registrar",
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    );
   }
 
   Widget _loginAccountLink() {
     return Expanded(
-        child: Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text("¿Ya tienes una cuenta?", style: TextStyle(fontSize: 14)),
-        GestureDetector(
-          onTap: () {
-            _navegationService.goBack();
-          },
-          child: const Text(
-            "Logueate",
-            style: TextStyle(fontWeight: FontWeight.w800),
-          ),
-        )
-      ],
-    ));
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text("¿Ya tienes una cuenta?", style: TextStyle(fontSize: 14)),
+          GestureDetector(
+            onTap: () {
+              _navegationService.goBack();
+            },
+            child: const Text(
+              "Logueate",
+              style: TextStyle(fontWeight: FontWeight.w800),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _contentPassword() {
+    return SizedBox(
+        width: MediaQuery.sizeOf(context).width,
+        child: const Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "La contraseña debe contener:",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              Text(
+                ' - Al menos 8 caracteres \n - Al menos una letra minúscula \n - Al menos una letra mayúscula \n - Al menos un número',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              )
+            ]));
   }
 }
