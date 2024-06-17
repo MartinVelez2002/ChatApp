@@ -52,20 +52,22 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _buildUI() {
     return SafeArea(
-        child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-            child: Column(
-              children: [
-                _headerText(),
-                if (!isloading) _registerForm(),
-                if (!isloading) _loginAccountLink(),
-                if (isloading)
-                  const Expanded(
-                      child: Center(
-                    child: CircularProgressIndicator(),
-                  )),
-              ],
-            )));
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+        child: Column(
+          children: [
+            _headerText(),
+            if (!isloading) _registerForm(),
+            if (!isloading) _loginAccountLink(),
+            if (isloading)
+              const Expanded(
+                  child: Center(
+                child: CircularProgressIndicator(),
+              )),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _headerText() {
@@ -190,14 +192,21 @@ class _RegisterPageState extends State<RegisterPage> {
                         pfpURL: pfpURL),
                   );
                   _alertService.showToast(
-                    text: "Te has registrado satisfactoriamente",
-                    icon: Icons.check_circle_outline,
+                    text: "Usuario registrado",
+                    icon: Icons.check,
                   );
+                  _navegationService.goBack();
+                  _navegationService.pushReplacementNamed("/home");
                 }
+              } else {
+                throw Exception("No se ha podido registrar el usuario");
               }
             }
           } catch (e) {
-            print(e);
+            _alertService.showToast(
+              text: "Ha fallado el registro, inténtalo de nuevo.",
+              icon: Icons.error,
+            );
           }
           setState(() {
             isloading = false;
@@ -249,7 +258,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               Text(
-                ' - Al menos 8 caracteres \n - Al menos una letra minúscula \n - Al menos una letra mayúscula \n - Al menos un número',
+                ' - Al menos 8 caracteres \n - Al menos una letra minúscula y mayúscula \n - Al menos un número',
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,

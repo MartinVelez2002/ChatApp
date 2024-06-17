@@ -20,6 +20,7 @@ dependencies:
   path: ^1.9.0  
   flutter:
     sdk: flutter
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
@@ -28,3 +29,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/chatapp.png"
