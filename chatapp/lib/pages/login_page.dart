@@ -3,18 +3,21 @@ import 'package:chatapp/services/alert_service.dart';
 import 'package:chatapp/services/auth_service.dart';
 import 'package:chatapp/services/navegation_service.dart';
 import 'package:chatapp/widgets/custom_form_field.dart';
+import 'package:chatapp/widgets/custom_form_password.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:sign_in_button/sign_in_button.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
-  
+  LoginPage({super.key});
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
   final GetIt _getIt = GetIt.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final GlobalKey<FormState> _loginFormKey = GlobalKey();
 
@@ -22,10 +25,16 @@ class _LoginPageState extends State<LoginPage> {
   late NavegationService _navegationService;
   late AlertService _alertService;
 
+  User? _user;
   String? email, password;
   bool isloading = false;
   @override
   void initState() {
+    _auth.authStateChanges().listen((event) {
+      setState(() {
+        _user = event;
+      });
+    });
     _authService = _getIt.get<AuthService>();
     _navegationService = _getIt.get<NavegationService>();
     _alertService = _getIt.get<AlertService>();
@@ -108,11 +117,10 @@ class _LoginPageState extends State<LoginPage> {
                 });
               },
             ),
-            CustomFormField(
+            CustomFormFieldPassword(
               hintText: "Contraseña",
               height: MediaQuery.sizeOf(context).height * 0.1,
               validationRegEx: PASSWORD_VALIDATION_REGEX,
-
               obscureText: true,
               onSaved: (value) {
                 setState(() {
@@ -120,7 +128,9 @@ class _LoginPageState extends State<LoginPage> {
                 });
               },
             ),
-            _loginButton()
+            _loginButton(),
+            const Text("----------- o -----------"),
+            _loginWithGoogle(),
           ],
         ),
       ),
@@ -171,5 +181,32 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     );
+  }
+
+  Widget _loginWithGoogle() {
+    return Center(
+      child: SizedBox(
+        height: 50,
+        child: SignInButton(
+          Buttons.google,
+          text: "Iniciar sesión con Google",
+          onPressed: _handleGoogleSignIn,
+        ),
+      ),
+    );
+  }
+
+  Widget _userInfo() {
+    return SizedBox();
+  }
+
+  void _handleGoogleSignIn() {
+    try {
+      GoogleAuthProvider _googleAuthProvider = GoogleAuthProvider();
+      _auth.signInWithProvider(_googleAuthProvider);
+      
+    } catch (error) {
+      print(error);
+    }
   }
 }

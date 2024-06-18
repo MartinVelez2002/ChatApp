@@ -4,7 +4,6 @@ import 'package:chatapp/models/user_profile.dart';
 import 'package:chatapp/services/auth_service.dart';
 import 'package:chatapp/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 
 class DatabaseService {
@@ -43,6 +42,11 @@ class DatabaseService {
     return _usersCollection
         ?.where("uid", isNotEqualTo: _authService.user!.uid)
         .snapshots() as Stream<QuerySnapshot<UserProfile>>;
+  }
+  
+  Future<bool> isEmailRegistered(String email) async {
+    final querySnapshot = await _usersCollection!.where('email', isEqualTo: email).get();
+    return querySnapshot.docs.isNotEmpty;
   }
 
   Future<bool> checkChatExists(String uid1, String uid2) async {

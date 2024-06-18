@@ -8,6 +8,7 @@ import 'package:chatapp/services/media_service.dart';
 import 'package:chatapp/services/navegation_service.dart';
 import 'package:chatapp/services/storage_service.dart';
 import 'package:chatapp/widgets/custom_form_field.dart';
+import 'package:chatapp/widgets/custom_form_password.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -128,7 +129,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 );
               },
             ),
-            CustomFormField(
+            CustomFormFieldPassword(
               hintText: "Contraseña",
               height: MediaQuery.sizeOf(context).height * 0.1,
               validationRegEx: PASSWORD_VALIDATION_REGEX,
@@ -180,6 +181,20 @@ class _RegisterPageState extends State<RegisterPage> {
           try {
             if ((_registerFormKey.currentState?.validate() ?? false)) {
               _registerFormKey.currentState?.save();
+
+              bool emailExists =
+                  await _databaseService.isEmailRegistered(email!);
+              if (emailExists) {
+                _alertService.showToast(
+                  text: "El correo ya está registrado. Usa otro correo.",
+                  icon: Icons.error,
+                );
+                setState(() {
+                  isloading = false;
+                });
+                return;
+              }
+
               bool result = await _authService.signup(email!, password!);
               if (result) {
                 String? pfpURL = await _storageService.uploadUserPfp(
@@ -189,7 +204,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     userProfile: UserProfile(
                         uid: _authService.user!.uid,
                         name: name,
-                        pfpURL: pfpURL),
+                        pfpURL: pfpURL,
+                        email: email!),
                   );
                   _alertService.showToast(
                     text: "Usuario registrado",

@@ -63,6 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '157002456347',
     projectId: 'chatwave-f8f55',
     storageBucket: 'chatwave-f8f55.appspot.com',
+    iosClientId: '157002456347-v4is89q6jpq51jrdvq3rbfhbiaho3j89.apps.googleusercontent.com',
     iosBundleId: 'com.example.chatapp',
   );
+
 }

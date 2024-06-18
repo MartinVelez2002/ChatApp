@@ -31,12 +31,10 @@ class AuthService {
           email: email, password: password);
       if (credential.user != null) {
         _user = credential.user;
-        print("Usuario registrado satisfactoriamente");
+
         return true;
       }
-    } catch (e) {
-      print("El registro de usuario ha fallado");
-    }
+    } catch (e) {}
     return false;
   }
 

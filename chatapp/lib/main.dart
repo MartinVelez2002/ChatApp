@@ -1,6 +1,8 @@
+import 'package:chatapp/firebase_options.dart';
 import 'package:chatapp/services/auth_service.dart';
 import 'package:chatapp/services/navegation_service.dart';
 import 'package:chatapp/utils.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,6 +16,9 @@ Future<void> setup() async {
   WidgetsFlutterBinding.ensureInitialized();
   await setupFirebase();
   await registerServices();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 }
 
 class MainApp extends StatelessWidget {

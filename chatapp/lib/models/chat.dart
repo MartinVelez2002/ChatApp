@@ -1,5 +1,4 @@
 
-
 import 'package:chatapp/models/messages.dart';
 
 class Chat {
