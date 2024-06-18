@@ -50,19 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDluC6SZ6tyt4njWGYMsNNSaqZmryGfsew',
-    appId: '1:10389976319:android:750bac4098ec2d707408ca',
-    messagingSenderId: '10389976319',
-    projectId: 'chatappdw',
-    storageBucket: 'chatappdw.appspot.com',
+    apiKey: 'AIzaSyD_vXpJxZSmmdPs7y7Q_dj7EW8TpWzaNV8',
+    appId: '1:157002456347:android:382c8fbb43c66e361ec7be',
+    messagingSenderId: '157002456347',
+    projectId: 'chatwave-f8f55',
+    storageBucket: 'chatwave-f8f55.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCIghyWA7qebN2p6hBIaSUZ5iq79nXsVuE',
-    appId: '1:10389976319:ios:1e2796c9b4fe38897408ca',
-    messagingSenderId: '10389976319',
-    projectId: 'chatappdw',
-    storageBucket: 'chatappdw.appspot.com',
+    apiKey: 'AIzaSyBufJlE07ctM5pnjjhwXDr7BCwGkZf4zgs',
+    appId: '1:157002456347:ios:8a18a1b6cb30399c1ec7be',
+    messagingSenderId: '157002456347',
+    projectId: 'chatwave-f8f55',
+    storageBucket: 'chatwave-f8f55.appspot.com',
     iosBundleId: 'com.example.chatapp',
   );
 }
