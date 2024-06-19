@@ -96,7 +96,7 @@ class _ChatPageState extends State<ChatPage> {
         Message message = Message(
           senderID: chatMessage.user.id,
           content: chatMessage.medias!.first.url,
-          messageType: MessageType.Image,
+          messageType: MessageType.image,
           sentAt: Timestamp.fromDate(chatMessage.createdAt),
         );
         await _databaseService.sendChatMessage(
@@ -109,7 +109,7 @@ class _ChatPageState extends State<ChatPage> {
       Message message = Message(
         senderID: currentUser!.id,
         content: chatMessage.text,
-        messageType: MessageType.Text,
+        messageType: MessageType.text,
         sentAt: Timestamp.fromDate(chatMessage.createdAt),
       );
       await _databaseService.sendChatMessage(
@@ -122,7 +122,7 @@ class _ChatPageState extends State<ChatPage> {
 
   List<ChatMessage> _generateChatMessagesList(List<Message> messages) {
     List<ChatMessage> chatMessages = messages.map((m) {
-      if (m.messageType == MessageType.Image) {
+      if (m.messageType == MessageType.text) {
         return ChatMessage(
             user: m.senderID == currentUser!.id ? currentUser! : otherUser!,
             createdAt: m.sentAt!.toDate(),
@@ -178,7 +178,7 @@ class _ChatPageState extends State<ChatPage> {
           }
         }
       },
-      icon: Icon(Icons.image),
+      icon: const Icon(Icons.image),
       color: Theme.of(context).colorScheme.primary,
     );
   }

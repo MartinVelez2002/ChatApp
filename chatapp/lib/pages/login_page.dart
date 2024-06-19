@@ -1,6 +1,8 @@
 import 'package:chatapp/consts.dart';
+import 'package:chatapp/models/user_profile.dart';
 import 'package:chatapp/services/alert_service.dart';
 import 'package:chatapp/services/auth_service.dart';
+import 'package:chatapp/services/database_service.dart';
 import 'package:chatapp/services/navegation_service.dart';
 import 'package:chatapp/widgets/custom_form_field.dart';
 import 'package:chatapp/widgets/custom_form_password.dart';
@@ -20,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final GlobalKey<FormState> _loginFormKey = GlobalKey();
-
+  late DatabaseService _databaseService;
   late AuthService _authService;
   late NavegationService _navegationService;
   late AlertService _alertService;
@@ -35,6 +37,7 @@ class _LoginPageState extends State<LoginPage> {
         _user = event;
       });
     });
+    _databaseService = _getIt.get<DatabaseService>();
     _authService = _getIt.get<AuthService>();
     _navegationService = _getIt.get<NavegationService>();
     _alertService = _getIt.get<AlertService>();
@@ -75,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            "Bienvenido de regreso",
+            "Bienvenido de vuelta",
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w800,
@@ -196,15 +199,27 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _userInfo() {
-    return SizedBox();
-  }
-
-  void _handleGoogleSignIn() {
+  void _handleGoogleSignIn() async {
     try {
       GoogleAuthProvider _googleAuthProvider = GoogleAuthProvider();
-      _auth.signInWithProvider(_googleAuthProvider);
-      
+      final UserCredential userCredential =
+          await _auth.signInWithProvider(_googleAuthProvider);
+      final User? user = userCredential.user;
+
+      if (user != null) {
+        _databaseService.createUserProfile(
+          userProfile: UserProfile(
+              uid: user.uid,
+              name: user.displayName,
+              pfpURL: user.photoURL,
+              email: user.email),
+        );
+
+        // Navegar a la pantalla principal o realizar otras acciones después del inicio de sesión
+        _alertService.showToast(
+            text: "Sesión Iniciada con Google", icon: Icons.verified_sharp);
+        _navegationService.pushReplacementNamed("/home");
+      }
     } catch (error) {
       print(error);
     }

@@ -25,7 +25,7 @@ class _CustomFormFieldState extends State<CustomFormFieldPassword> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: widget.height,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

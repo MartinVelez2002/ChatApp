@@ -9,7 +9,7 @@ class NavegationService {
   final Map<String, Widget Function(BuildContext)> _routes = {
     "/login": (context) => LoginPage(),
     "/home": (context) => const HomePage(),
-    "/register": (context) => RegisterPage(),
+    "/register": (context) => const RegisterPage(),
   };
 
   GlobalKey<NavigatorState>? get navigatorKey {

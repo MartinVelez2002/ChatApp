@@ -36,6 +36,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
+          
           "Bandeja de Mensajes",
         ),
       ),
@@ -45,7 +46,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.black,
+                color: Color.fromRGBO(0, 0, 0, 1),
               ),
               child: Text(
                 "Menú de Opciones",
@@ -54,6 +55,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
+            
             ListTile(
                 title: const Text("Cerrar Sesión"),
                 onTap: () {

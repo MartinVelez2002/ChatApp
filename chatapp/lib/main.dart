@@ -36,7 +36,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: _navegationService.navigatorKey,
-      title: 'Prueba de Flutter',
+      title: "Flutter",
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
             seedColor: const Color.fromARGB(255, 113, 51, 221)),
@@ -45,6 +45,7 @@ class MainApp extends StatelessWidget {
       ),
       initialRoute: _authService.user != null ? "/home" : "/login",
       routes: _navegationService.routes,
+      
     );
   }
 }

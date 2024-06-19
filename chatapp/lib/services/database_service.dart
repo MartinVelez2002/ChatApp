@@ -14,8 +14,8 @@ class DatabaseService {
   CollectionReference? _chatsCollection;
 
   DatabaseService() {
-    final GetIt _getIt = GetIt.instance;
-    _authService = _getIt.get<AuthService>();
+    final GetIt getIt = GetIt.instance;
+    _authService = getIt.get<AuthService>();
     _setupCollectionReferences();
   }
 

@@ -24,7 +24,7 @@ class ChatTile extends StatelessWidget {
         ),
       ),
       title: Text(
-        userProfile.name!,
+        userProfile.name ?? 'Nombre no disponible',
       ),
     );
   }

@@ -164,7 +164,7 @@ class _RegisterPageState extends State<RegisterPage> {
         radius: MediaQuery.of(context).size.width * 0.15,
         backgroundImage: selectedImage != null
             ? FileImage(selectedImage!)
-            : NetworkImage(PLACEHOLDER_PFP) as ImageProvider,
+            : const NetworkImage(PLACEHOLDER_PFP) as ImageProvider,
       ),
     );
   }
@@ -212,7 +212,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     icon: Icons.check,
                   );
                   _navegationService.goBack();
-                  _navegationService.pushReplacementNamed("/home");
+                  _navegationService.pushReplacementNamed("/login");
                 }
               } else {
                 throw Exception("No se ha podido registrar el usuario");
