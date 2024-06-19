@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:chatapp/models/chat.dart';
 import 'package:chatapp/models/messages.dart';
 import 'package:chatapp/models/user_profile.dart';
@@ -31,6 +30,7 @@ class _ChatPageState extends State<ChatPage> {
   late DatabaseService _databaseService;
   late MediaService _mediaService;
   late StorageService _storageService;
+
   @override
   void initState() {
     super.initState();
@@ -45,9 +45,10 @@ class _ChatPageState extends State<ChatPage> {
     );
 
     otherUser = ChatUser(
-        id: widget.chatUser.uid!,
-        firstName: widget.chatUser.name,
-        profileImage: widget.chatUser.pfpURL);
+      id: widget.chatUser.uid!,
+      firstName: widget.chatUser.name,
+      profileImage: widget.chatUser.pfpURL,
+    );
   }
 
   @override
@@ -64,12 +65,15 @@ class _ChatPageState extends State<ChatPage> {
     return StreamBuilder(
       stream: _databaseService.getChatData(currentUser!.id, otherUser!.id),
       builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
         Chat? chat = snapshot.data?.data();
         List<ChatMessage> messages = [];
         if (chat != null && chat.messages != null) {
-          messages = _generateChatMessagesList(
-            chat.messages!,
-          );
+          messages = _generateChatMessagesList(chat.messages!);
         }
         return DashChat(
           messageOptions: const MessageOptions(
@@ -122,17 +126,18 @@ class _ChatPageState extends State<ChatPage> {
 
   List<ChatMessage> _generateChatMessagesList(List<Message> messages) {
     List<ChatMessage> chatMessages = messages.map((m) {
-      if (m.messageType == MessageType.text) {
+      if (m.messageType == MessageType.image) {
         return ChatMessage(
-            user: m.senderID == currentUser!.id ? currentUser! : otherUser!,
-            createdAt: m.sentAt!.toDate(),
-            medias: [
-              ChatMedia(
-                url: m.content!,
-                fileName: "",
-                type: MediaType.image,
-              )
-            ]);
+          user: m.senderID == currentUser!.id ? currentUser! : otherUser!,
+          createdAt: m.sentAt!.toDate(),
+          medias: [
+            ChatMedia(
+              url: m.content!,
+              fileName: "",
+              type: MediaType.image,
+            ),
+          ],
+        );
       } else {
         return ChatMessage(
           user: m.senderID == currentUser!.id ? currentUser! : otherUser!,

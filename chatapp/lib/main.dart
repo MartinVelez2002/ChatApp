@@ -9,13 +9,13 @@ import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   await Locales.init(['en']);
   await setup();
   runApp(MainApp());
 }
 
 Future<void> setup() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await setupFirebase();
   await registerServices();
   await Firebase.initializeApp(
