@@ -19,13 +19,12 @@ dependencies:
   image_picker: ^1.1.1
   path: ^1.9.0
   sign_in_button: ^3.2.0
-  google_sign_in: ^6.2.1
+  flutter_locales: ^3.0.2
   
+
   flutter:
     sdk: flutter
-  flutter_localizations:
-      sdk: flutter
-  flutter_launcher_icons: ^0.13.1
+  
   
 
 dev_dependencies:
@@ -40,4 +39,7 @@ flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/images/chatapp.png"
+
+assets:
+- assets/locales/en.json
   

@@ -1,0 +1,19 @@
+{
+    "textLogin": "Login",
+    "contrasenia": "Password",
+    "notAccount": "Do not you have an account yet?",
+    "register": "Register now",
+    "textHeader": "Welcome Back",
+    "timeTsee": "Time no see",
+    "user": "User:",
+    "email": "Email:",
+    "passwordMayCont": "Password should content:",
+    "content": "- At least 8 characters \n-At least one lowercase and one uppercase letter \n-At least one nombre",
+    "registerR": "Register",
+    "registerNewAc": "Register a new account",
+    "accountYes": "Already have an account?",
+    "optionsMenu": "Menú de Opciones",
+    "logout": "Logout",
+    "messageBox": "Message Box"
+
+}

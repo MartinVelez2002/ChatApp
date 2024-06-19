@@ -4,16 +4,18 @@ import 'package:chatapp/services/navegation_service.dart';
 import 'package:chatapp/utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Locales.init(['en']);
   await setup();
   runApp(MainApp());
 }
 
 Future<void> setup() async {
-  WidgetsFlutterBinding.ensureInitialized();
   await setupFirebase();
   await registerServices();
   await Firebase.initializeApp(
@@ -45,7 +47,6 @@ class MainApp extends StatelessWidget {
       ),
       initialRoute: _authService.user != null ? "/home" : "/login",
       routes: _navegationService.routes,
-      
     );
   }
 }

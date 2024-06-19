@@ -36,7 +36,6 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          
           "Bandeja de Mensajes",
         ),
       ),
@@ -55,7 +54,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            
             ListTile(
                 title: const Text("Cerrar Sesión"),
                 onTap: () {
